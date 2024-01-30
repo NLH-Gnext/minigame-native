@@ -1,28 +1,60 @@
-import { Text, StyleSheet, View } from "react-native";
+import { Text, StyleSheet, View, Alert } from "react-native";
 import Title from "../components/ui/Title";
 import NumberContainer from "../components/game/NumberContainer";
 import { useState } from "react";
+import PrimaryButton from "../components/ui/PrimaryButton";
 
-function generateRamdomNumber(min, max, exclude) {
+function generateRandomBetween(min, max, exclude) {
   const randomNumber = Math.floor(Math.random() * (max - min)) + min;
   if (randomNumber === exclude) {
-    return generateRamdomNumber(min, max, exclude);
+    return generateRandomBetween(min, max, exclude);
   } else {
     return randomNumber;
   }
 }
 
+let minBoundry = 1;
+let maxBoundry = 100;
+
 const GamingScreen = ({ userNumber }) => {
-  const initialGuess = generateRamdomNumber(1, 100, userNumber);
+  const initialGuess = generateRandomBetween(1, 100, userNumber);
   const [currentGuess, setCurrentGuess] = useState(initialGuess);
+
+  function nextGuessHandler(direction) {
+    if (
+      (direction === "lower" && currentGuess < userNumber) ||
+      (direction === "greater" && currentGuess > userNumber)
+    ) {
+      Alert.alert("Don't lie", "You know this is wrong", [
+        { text: "OK", style: "cancel" },
+      ]);
+      return;
+    }
+    if (direction === "lower") {
+      maxBoundry = currentGuess;
+    } else {
+      minBoundry = currentGuess;
+    }
+    let newRandomNumber = generateRandomBetween(
+      minBoundry,
+      maxBoundry,
+      currentGuess
+    );
+    setCurrentGuess(newRandomNumber);
+  }
+
   return (
     <View style={styles.screen}>
       <Title>Opponent's Guess</Title>
-      {/* Guess */}
       <NumberContainer>{currentGuess}</NumberContainer>
       <View>
         <Text>Higher or Lower?</Text>
-        {/* + - */}
+        <PrimaryButton onPress={nextGuessHandler.bind(this, "greater")}>
+          +
+        </PrimaryButton>
+        <PrimaryButton onPress={nextGuessHandler.bind(this, "lower")}>
+          -
+        </PrimaryButton>
         {/* <View>Log Round</View> */}
       </View>
     </View>
