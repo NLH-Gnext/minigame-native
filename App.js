@@ -13,11 +13,12 @@ export default function App() {
   const [gameIsOver, setGameIsOver] = useState(true);
 
   const [fontsLoaded] = useFonts({
-    "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
-    "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
+    OpenSans: require("./assets/fonts/OpenSans-Regular.ttf"),
+    OpenSansBold: require("./assets/fonts/OpenSans-Bold.ttf"),
   });
-  if(!fontsLoaded){
-    <AppLoading/>
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
   }
 
   const pickNumberHandler = (pickedNumber) => {
