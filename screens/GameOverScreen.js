@@ -14,7 +14,7 @@ const GameOverScreen = ({ roundNumber, userNumber, onStartNewGame }) => {
         Your Phone needed <Text style={styles.highlight}>{roundNumber}</Text> rounds to
         guess the number <Text style={styles.highlight}>{userNumber}</Text>.
       </Text>
-      <PrimaryButton>Start New Game</PrimaryButton>
+      <PrimaryButton onPress={onStartNewGame}>Start New Game</PrimaryButton>
     </View>
   );
 };

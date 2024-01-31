@@ -1,4 +1,4 @@
-import { StyleSheet, View, Alert, Text, FlatList } from "react-native";
+import { StyleSheet, View, Alert, FlatList } from "react-native";
 import Title from "../components/ui/Title";
 import NumberContainer from "../components/game/NumberContainer";
 import { useEffect, useState } from "react";
@@ -23,11 +23,11 @@ let maxBoundry = 100;
 const GamingScreen = ({ userNumber, onGameOver }) => {
   const initialGuess = generateRandomBetween(1, 100, userNumber);
   const [currentGuess, setCurrentGuess] = useState(initialGuess);
-  const [guessRounds, setGuessRounds] = useState([]);
+  const [guessRounds, setGuessRounds] = useState([initialGuess]);
 
   useEffect(() => {
     if (currentGuess === userNumber) {
-      onGameOver();
+      onGameOver(guessRounds.length);
     }
   }, [currentGuess, userNumber, onGameOver]);
 
@@ -59,7 +59,6 @@ const GamingScreen = ({ userNumber, onGameOver }) => {
     setCurrentGuess(newRandomNumber);
     setGuessRounds((prevGuessRounds) => [newRandomNumber, ...prevGuessRounds]);
   }
-
   const guessRoundListLength = guessRounds.length;
 
   return (
@@ -83,16 +82,21 @@ const GamingScreen = ({ userNumber, onGameOver }) => {
           </View>
         </View>
       </Card>
-      {/* {guessRounds.map((guessRound) => (
+
+      <View style={styles.listContainer}>
+        {/* {guessRounds.map((guessRound) => (
         <Text key={guessRound}>{guessRound}</Text>
       ))} */}
-      <FlatList
-        data={guessRounds}
-        renderItem={({ item, index }) => (
-          <GuessLog roundNumber={guessRoundListLength - index} guess={item} />
-        )}
-        keyExtractor={(item) => item}
-      />
+
+        <FlatList
+          data={guessRounds}
+          renderItem={({ item, index }) => (
+            <GuessLog roundNumber={guessRoundListLength - index} guess={item} />
+          )}
+          keyExtractor={(item) => item}
+          style={styles.outerlist}
+        />
+      </View>
     </View>
   );
 };
@@ -101,6 +105,7 @@ export default GamingScreen;
 
 const styles = StyleSheet.create({
   screen: {
+    flex: 1,
     marginTop: 40,
     padding: 24,
   },
@@ -112,5 +117,12 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
+  },
+  outerlist: {
+    paddingHorizontal: 10,
+  },
+  listContainer: {
+    flex: 1,
+    padding: 10,
   },
 });
