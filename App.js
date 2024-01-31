@@ -11,6 +11,7 @@ import { useFonts } from "expo-font";
 export default function App() {
   const [userNumber, setUserNumber] = useState();
   const [gameIsOver, setGameIsOver] = useState(true);
+  const [guessRounds, setGuessRounds] = useState(0);
 
   const [fontsLoaded] = useFonts({
     OpenSans: require("./assets/fonts/OpenSans-Regular.ttf"),
@@ -28,6 +29,10 @@ export default function App() {
   const gameOverHandler = () => {
     setGameIsOver(true);
   };
+  const starNewGameHandler = () => {
+    setUserNumber(null);
+    setGuessRounds(0);
+  };
 
   let screen = <StartGamingScreen onPickNumber={pickNumberHandler} />;
   if (userNumber) {
@@ -36,7 +41,13 @@ export default function App() {
     );
   }
   if (gameIsOver && userNumber) {
-    screen = <GameOverScreen />;
+    screen = (
+      <GameOverScreen
+        roundNumber={guessRounds}
+        userNumber={userNumber}
+        onStartNewGame={starNewGameHandler}
+      />
+    );
   }
 
   return (
