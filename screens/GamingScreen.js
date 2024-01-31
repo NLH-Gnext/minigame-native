@@ -80,9 +80,14 @@ const GamingScreen = ({ userNumber, onGameOver }) => {
           </View>
         </View>
       </Card>
-      {guessRounds.map((guessRound) => (
+      {/* {guessRounds.map((guessRound) => (
         <Text key={guessRound}>{guessRound}</Text>
-      ))}
+      ))} */}
+      <FlatList
+        data={guessRounds}
+        renderItem={({ item }) => <Text>{item}</Text>}
+        keyExtractor={(item) => item}
+      />
     </View>
   );
 };
