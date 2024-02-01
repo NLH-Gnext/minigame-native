@@ -49,7 +49,7 @@ const GamingScreen = ({ userNumber, onGameOver }) => {
     if (direction === "lower") {
       maxBoundry = currentGuess;
     } else {
-      minBoundry = currentGuess;
+      minBoundry = currentGuess + 1;
     }
     let newRandomNumber = generateRandomBetween(
       minBoundry,
