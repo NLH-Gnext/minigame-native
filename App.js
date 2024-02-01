@@ -1,11 +1,11 @@
 import { ImageBackground, SafeAreaView, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Colors from "./constants/Colors";
 import StartGamingScreen from "./screens/StartGamingScreen";
 import GamingScreen from "./screens/GamingScreen";
 import GameOverScreen from "./screens/GameOverScreen";
-import AppLoading from "expo-app-loading";
+import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 
 export default function App() {
@@ -13,13 +13,19 @@ export default function App() {
   const [gameIsOver, setGameIsOver] = useState(true);
   const [guessRounds, setGuessRounds] = useState(0);
 
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     OpenSans: require("./assets/fonts/OpenSans-Regular.ttf"),
     OpenSansBold: require("./assets/fonts/OpenSans-Bold.ttf"),
   });
 
-  if (!fontsLoaded) {
-    return <AppLoading />;
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded || fontError) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) {
+    return null;
   }
 
   const pickNumberHandler = (pickedNumber) => {
@@ -28,7 +34,7 @@ export default function App() {
   };
   const gameOverHandler = (numberOfRounds) => {
     setGameIsOver(true);
-    setGuessRounds(numberOfRounds)
+    setGuessRounds(numberOfRounds);
   };
   const starNewGameHandler = () => {
     setUserNumber(null);
@@ -62,7 +68,9 @@ export default function App() {
         style={styles.rootScreen}
         imageStyle={styles.backgroundImage}
       >
-        <SafeAreaView style={styles.rootScreen}>{screen}</SafeAreaView>
+        <SafeAreaView style={styles.rootScreen} onLayout={onLayoutRootView}>
+          {screen}
+        </SafeAreaView>
       </ImageBackground>
     </LinearGradient>
   );
@@ -75,5 +83,4 @@ const styles = StyleSheet.create({
   backgroundImage: {
     opacity: 0.15,
   },
-  
 });
